@@ -1,0 +1,23 @@
+<?php
+
+use Drupal\Core\Ajax\RedirectCommand;
+use Drupal\Core\Url;
+use Drupal\Core\Access\AccessResult;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+
+function dots_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\Core\Session\AccountInterface $account) {
+  $current_user = \Drupal::currentUser();
+  $roles = $current_user->getRoles();
+  //dsm($node->field_premium_post->value);
+  if ($node->getType() == "preminu_news" && in_array('member', $roles)) {
+      return AccessResult::allowed();
+  } 
+  else {
+    if($node->field_premium_post->value == "premuim_post") {
+      $redirectURL = '/user/login?destination=node/'.$node->id();
+      $response = new RedirectResponse($redirectURL);
+      $response->send();
+    }
+  }
+}
